@@ -23,7 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  desktop_window: ^0.4.0
+ # desktop_window: ^0.4.0
+  process_run: ^0.12.2+1
 
 
   # The following adds the Cupertino Icons font to your application.
