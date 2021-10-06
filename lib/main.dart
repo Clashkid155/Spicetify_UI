@@ -384,6 +384,7 @@ void exe({String themename = '', String themesub = '', String ext = ''}) async {
   print(themesub);
   print(themename);
   print(ext);
+  var deltheme;
 
   if (whichSync('spicetify') != null) {
     var shell = Shell();
@@ -391,101 +392,37 @@ void exe({String themename = '', String themesub = '', String ext = ''}) async {
             runInShell: true))
         .stdout;
     // print(currenttheme);
-    var deltheme = ext.isNotEmpty
-        ? ext
-        : currenttheme.isNotEmpty
-            ? '${currenttheme.trim()}-'
-            : '';
+
     // print(deltheme);
+    //print(currenttheme.length);
+    if (currenttheme.toString().isNotEmpty && ext.isNotEmpty) {
+      deltheme =
+          'spicetify config extensions ${currenttheme.trim()}-\n spicetify config extensions $ext';
+      print('Main if block $deltheme');
+    } else {
+      deltheme = ext.isNotEmpty
+          ? ext
+          : currenttheme.isNotEmpty
+              ? '${currenttheme.trim()}-'
+              : '';
+      deltheme = 'spicetify config extensions $deltheme';
+      print('Else block $deltheme');
+    }
+    print(deltheme);
+    // #${currenttheme.isEmpty ? 'spicetify config extensions $deltheme' : 'spicetify config extensions ${currenttheme.trim()}-'}
     // TODO: Fix apply extension unto another
     if (themesub.isEmpty) {
+      // Not needed
       var b = await shell.run(''' spicetify config current_theme $themename
      echo $deltheme
       
-      ${currenttheme.isEmpty ? 'spicetify config extensions $deltheme' : 'spicetify config extensions ${currenttheme.trim()}-'}
+      $deltheme
     spicetify apply''');
     } else {
       await shell.run(''' spicetify config current_theme $themename
       spicetify config color_scheme $themesub
-    ${currenttheme.isEmpty ? 'spicetify config extensions $deltheme' : 'spicetify config extensions ${currenttheme.trim()}-'}
+    $deltheme
     spicetify apply''');
     }
   }
 }
-
-/*
-
-Future<List<Map<dynamic, dynamic>>> listd() async {
-  Map te = {};
-  Map theme = {};
-  var themesub;
-  var dir = Directory('/home/francis/GitHub_Stuff/spicetify-themes/');
-  await for (var e in dir.list(recursive: true)) {
-    var folderName =
-        e.parent.toString().split('/').last.replaceFirst('\'', '') !=
-                'screenshots'
-            ? e.parent
-                .toString()
-                .split(Platform.pathSeparator)
-                .last
-                .replaceFirst('\'', '')
-            : e.parent
-                .toString()
-                .split(Platform.pathSeparator)
-                .reversed
-                .elementAt(1);
-
-    if (e.path.contains(RegExp(r'(gif|png)'))) {
-      //.replaceFirst('\'', '');
-      var imgName = e.path
-          .split(Platform.pathSeparator)
-          .reversed
-          .elementAt(0)
-          .splitMapJoin(RegExp(r'^[a-z]'),
-              onMatch: (m) => '${m[0]?.toUpperCase()}')
-          .split('.')[0];
-
-      Map<String, Map<String, String>> pics = {
-        folderName: Map.of({imgName: e.path})
-      };
-      //Map themes = {folderName: []};
-
-      if (te.containsKey(folderName)) {
-        te.update(folderName, (list) {
-          list?.addAll({imgName: e.path});
-          te.putIfAbsent('Ziro', () => {'': ''});
-          //print(list.runtimeType);
-          return list;
-        });
-      } else
-        te.addAll(pics);
-    } else if (e.path.contains(RegExp(r'(.ini)'))) {
-      themesub = await File(e.path).readAsString().then((value) {
-        // get text between braces [HI]=> HI
-        var reg = RegExp(r'(?<=\[).+?(?=\])');
-        var x = reg.allMatches(value).map((e) => e[0]);
-        return x.toList();
-      });
-      var extensions = e.path.endsWith('.js')
-          ? e.path.split(Platform.pathSeparator).reversed.elementAt(0)
-          : '';
-      //print(extensions);
-      theme.addAll({
-        folderName: Map.of({themesub: extensions})
-      });
-      //theme.update(key, (value) => null)
-      //print(theme);
-
-    } else if (e.path.contains('.js')) {
-      var extensions =
-          e.path.split(Platform.pathSeparator).reversed.elementAt(0);
-      //theme.update(folderName, (value) => 'hi');
-      theme[folderName]?[themesub] = extensions;
-      print(theme[folderName]);
-    }
-  }
-  print(theme);
-  return [te..remove('SpotifyNoControl'), theme];
-}
-
- */
