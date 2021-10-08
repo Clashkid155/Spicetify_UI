@@ -13,7 +13,11 @@ Future<Map<dynamic, dynamic>> listd() async {
   // print(te);
   var themesub;
   var path = await platform();
+  path = '$path${Platform.pathSeparator}Themes';
+  //print(path);
   var dir = Directory(path);
+  //print(File(dir.toString()).parent);
+  //print(dir.toString());
   await for (var e in dir.list(recursive: true)) {
     var folderName =
         e.parent.toString().split('/').last.replaceFirst('\'', '') !=
@@ -51,7 +55,7 @@ Future<Map<dynamic, dynamic>> listd() async {
             // Just for now
             'Ziro',
             () => {
-                  'images': <String>[e.path],
+                  'images': <String>[],
                   'js': [], // extensions
                   'scheme': [] // Sub themes
                 });
@@ -135,23 +139,14 @@ void exe({String themename = '', String themesub = '', String ext = ''}) async {
 
 Future platform() async {
   var path;
-  if (whichSync('spicetify') != null) {
-    if (Platform.isLinux | Platform.isMacOS) {
-      var temp = (await Process.run('spicetify', ['-c'], runInShell: true))
-          .stdout
-          .toString()
-          .trim();
+  //print(await which('spicetify'));
+  if ((await which('spicetify')) != null) {
+    var temp = (await Process.run('spicetify', ['-c'], runInShell: true))
+        .stdout
+        .toString()
+        .trim();
 
-      path = (await Process.run('dirname', [temp], runInShell: true))
-          .stdout
-          .toString()
-          .trim();
-      //print(path);
-      path = '$path${Platform.pathSeparator}Themes';
-    } else if (Platform.isWindows) {
-      //path =
-      // Need to test
-    }
-    return path;
+    path = Directory(temp).parent.path;
   }
+  return path;
 }
