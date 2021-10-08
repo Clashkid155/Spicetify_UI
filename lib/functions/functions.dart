@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ini/ini.dart';
 import 'package:process_run/shell.dart';
 
 Future<Map<dynamic, dynamic>> listd() async {
@@ -11,7 +12,7 @@ Future<Map<dynamic, dynamic>> listd() async {
     }
   };
   // print(te);
-  var themesub;
+  //var themesub;
   var path = await platform();
   path = '$path${Platform.pathSeparator}Themes';
   //print(path);
@@ -67,13 +68,9 @@ Future<Map<dynamic, dynamic>> listd() async {
     Future.delayed(Duration(seconds: 2), () async {
       // Parse the config.ini to get sub theme
       if (e.path.contains(RegExp(r'(.ini)'))) {
-        themesub = await File(e.path).readAsString().then((value) {
-          // get text between braces [HI]=> HI
-          var reg = RegExp(r'(?<=\[).+?(?=\])');
-          var x = reg.allMatches(value).map((e) => e[0]);
-          return x.toList();
-        });
-
+        var tr = await File(e.path).readAsString();
+        var themesub = Config.fromString(tr).sections().toList();
+        print(themesub);
         te[folderName]?['scheme'] = themesub;
       }
 
