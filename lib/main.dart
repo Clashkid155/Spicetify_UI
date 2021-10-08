@@ -102,26 +102,47 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ],
                       ),
-                      subtitle: Container(
-                        width: 500,
-                        height: 300,
-                        child: ListView.separated(
-                            padding: EdgeInsets.all(10),
-                            separatorBuilder:
-                                (BuildContext context, int index) =>
-                                    const SizedBox(
-                                      width: 15,
-                                      height: 10,
-                                    ),
-                            scrollDirection: Axis.horizontal,
-                            itemCount:
-                                sp[sp.keys.elementAt(index)]['images'].length,
-                            itemBuilder: (context, index1) {
-                              return Image.file(File(
-                                  sp[sp.keys.elementAt(index)]['images']
-                                      [index1]));
-                            }),
-                      ),
+                      subtitle: sp[sp.keys.elementAt(index)]['images']
+                              .isNotEmpty
+                          ? Container(
+                              width: 500,
+                              height: 300,
+                              child: ListView.separated(
+                                  padding: EdgeInsets.all(10),
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const SizedBox(
+                                            width: 15,
+                                            height: 10,
+                                          ),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: sp[sp.keys.elementAt(index)]
+                                          ['images']
+                                      .length,
+                                  //
+                                  itemBuilder: (context, dex) {
+                                    //print(sp['Ziro']['images'].isEmpty);
+                                    // print(
+                                    //     '${sp.keys.elementAt(index)}: ${sp[sp.keys.elementAt(index)]['images'][dex]}');
+                                    if (sp[sp.keys.elementAt(index)]['images']
+                                        .isNotEmpty) {
+                                      return Image.file(File(
+                                          sp[sp.keys.elementAt(index)]['images']
+                                              [dex]));
+                                    } else {
+                                      print('Test');
+                                      return Container(
+                                        color: Colors.red,
+                                        height: 2,
+                                        child: Center(
+                                            child: Text('Working on it')),
+                                      );
+                                    }
+                                  }),
+                            )
+                          : Container(
+                              height: 2,
+                            ),
                     );
                   },
                 );
